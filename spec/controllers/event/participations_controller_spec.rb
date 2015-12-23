@@ -36,6 +36,10 @@ describe Event::ParticipationsController do
            event_id: course.id,
            event_participation: { person_id: people(:top_leader).id }
       expect(participation.state).to eq 'applied'
+
+      expect(course.reload.applicant_count).to eq 1
+      expect(course.teamer_count).to eq 0
+      expect(course.participant_count).to eq 0
     end
 
     it 'sets participation state to assigned when created by organisator' do
@@ -44,6 +48,10 @@ describe Event::ParticipationsController do
            event_id: course.id,
            event_participation: { person_id: people(:bottom_member).id }
       expect(participation.state).to eq 'assigned'
+
+      expect(course.reload.applicant_count).to eq 1
+      expect(course.teamer_count).to eq 0
+      expect(course.participant_count).to eq 1
     end
 
   end
@@ -65,6 +73,10 @@ describe Event::ParticipationsController do
         expect(participation.canceled_at).to eq Date.today
         expect(participation.state).to eq 'canceled'
         expect(participation.active).to eq false
+
+        expect(course.reload.applicant_count).to eq 0
+        expect(course.teamer_count).to eq 0
+        expect(course.participant_count).to eq 0
       end
 
       it 'requires canceled_at date' do
@@ -181,7 +193,7 @@ describe Event::ParticipationsController do
                        address: 'Str',
                        zip_code: '4000',
                        town: 'Basel',
-                       country: 'AT',
+                       country: 'CH',
                        nationality_j_s: 'FL'
                       )
     create_contactables(person)
@@ -240,11 +252,11 @@ describe Event::ParticipationsController do
   end
 
   def person_sportdb_csv_row
-    %w(123 1 Muster Peter 11.06.1980 Str 4000 Basel A FL D).join(';')
+    %w(123 1 Muster Peter 11.06.1980 Str 4000 Basel CH FL D).join(';')
   end
 
   def person_ndbjs_csv_row
-    (%w(123 1 Muster Peter 11.06.1980 789 Str 4000 Basel BS A 11 42 99 33 foo@e.com FL D) +
+    (%w(123 1 Muster Peter 11.06.1980 789 Str 4000 Basel BS CH 11 42 99 33 foo@e.com FL D) +
       ['', '3', '', '', '1', '1']).join(';')
   end
 
