@@ -8,14 +8,6 @@
 module Youth::PersonSerializer
   extend ActiveSupport::Concern
 
-  included do
-    extension(:details) do |options|
-      map_properties :canton
-
-      if options[:show_full]
-        map_properties :j_s_number, :nationality_j_s, :ahv_number
-      end
-    end
-  end
+  
 
 end
